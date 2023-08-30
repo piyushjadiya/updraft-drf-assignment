@@ -16,7 +16,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+import accounts.views as views
+
+viewaccount = views.AccountsViewSet.as_view({'get': 'list'})
+viewaccountid = views.AccountsViewSet.as_view({'get': 'retrieve'})
+viewtransaction = views.TransactionViewSet.as_view({'get': 'list'})
+viewtransactionid = views.TransactionViewSet.as_view({'get': 'list_id'})
+
 urlpatterns = [
+    path("", views.home, name="home"),
+    path("accounts/", viewaccount, name="account"),
+    path('accounts/<int:id>/', viewaccountid, name="account_id"),
+    path("transactions/", viewtransaction, name="transaction"),
+    path("transactions/<int:id>/", viewtransactionid, name="transaction_id"),
     path("admin/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls")),
 ]
