@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -6,6 +8,17 @@ from django.utils.translation import gettext_lazy as _
 class Account(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, help_text="The name of the account owner")
+
+    @property
+    def transaction_count_last_thirty_days(self):
+        thirty_days_ago = datetime.now() - timedelta(days=30)
+        return self.transaction_set.filter(timestamp__gte=thirty_days_ago).count()
+
+    @property
+    def balance_change_last_thirty_days(self):
+        thirty_days_ago = datetime.now() - timedelta(days=30)
+        transactions = self.transaction_set.filter(timestamp__gte=thirty_days_ago)
+        return sum(transaction.amount for transaction in transactions)
 
 
 class TransactionCategory(models.TextChoices):

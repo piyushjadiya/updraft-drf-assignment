@@ -18,10 +18,10 @@ from django.urls import include, path
 
 import accounts.views as views
 
-viewaccount = views.AccountsViewSet.as_view({'get': 'list'})
-viewaccountid = views.AccountsViewSet.as_view({'get': 'retrieve'})
-viewtransaction = views.TransactionViewSet.as_view({'get': 'list'})
-viewtransactionid = views.TransactionViewSet.as_view({'get': 'list_id'})
+viewaccount = views.AccountsListView.as_view()
+viewaccountid = views.AccountRetrieveAPIView.as_view()
+viewtransaction = views.TransactionListView.as_view(pagination_class=views.CursorSetPagination)
+viewtransactionid = views.TransactionRetrieveAPIView.as_view()
 
 urlpatterns = [
     path("", views.home, name="home"),

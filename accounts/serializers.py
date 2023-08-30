@@ -1,21 +1,27 @@
 from django.conf import settings
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from accounts.models import Account, Transaction
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id']
+
 class AccountSerializer(serializers.Serializer):
-    id = serializers.UUIDField(format='hex_verbose')
-    user = serializers.RelatedField(source='settings.AUTH_USER_MODEL', read_only=True)
+    id = serializers.IntegerField()
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     name = serializers.CharField(max_length=200)
-    # transaction_count_last_thirty_days = serializers.IntegerField(
-    #     max_value=None, min_value=None)
-    # balance_change_last_thirty_days = serializers.FloatField(
-    #     max_value=None, min_value=None)
+    transaction_count_last_thirty_days = serializers.IntegerField(
+        max_value=None, min_value=None)
+    balance_change_last_thirty_days = serializers.CharField(
+        max_length=200)
 
     class Meta:
         model = Account
-        fields = '_all_'
+        fields = ['_all_']
 
 
 class TransactionSerializer(serializers.Serializer):
